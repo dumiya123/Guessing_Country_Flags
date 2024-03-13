@@ -5,13 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +27,22 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CountryFlagsApp() {
-    var selectedCategory by remember { mutableStateOf("Guess the Country") }
+    val navController = rememberNavController()
+
+    NavHost(navController, startDestination = "home") {
+        composable("home") {
+            HomeScreen(navController)
+        }
+        composable("guessCountryGame") {
+            GuessCountryGameScreen(navController)
+        }
+        // Add more screens as needed
+    }
+}
+
+@Composable
+fun HomeScreen(navController: NavController) {
+    var selectedCategory by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -34,7 +52,10 @@ fun CountryFlagsApp() {
         verticalArrangement = Arrangement.Center
     ) {
         Button(
-            onClick = { selectedCategory = "Guess the Country" },
+            onClick = {
+                selectedCategory = "Guess the Country"
+                navController.navigate("guessCountryGame")
+            },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
@@ -68,34 +89,20 @@ fun CountryFlagsApp() {
         ) {
             Text("Advanced Level")
         }
-
-        when (selectedCategory) {
-            "Guess the Country" -> GuessTheCountryScreen()
-            "Guess-Hints" -> GuessHintsScreen()
-            "Guess the Flag" -> GuessTheFlagScreen()
-            "Advanced Level" -> AdvancedLevelScreen()
-        }
     }
 }
 
 @Composable
-fun GuessTheCountryScreen() {
-    // Implement the Guess the Country screen
-}
-
-@Composable
-fun GuessHintsScreen() {
-    // Implement the Guess-Hints screen
-}
-
-@Composable
-fun GuessTheFlagScreen() {
-    // Implement the Guess the Flag screen
-}
-
-@Composable
-fun AdvancedLevelScreen() {
-    // Implement the Advanced Level screen
+fun GuessCountryGameScreen(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Guess the Country Game Screen")
+    }
 }
 
 @Preview(showBackground = true)
@@ -103,6 +110,8 @@ fun AdvancedLevelScreen() {
 fun DefaultPreview() {
     CountryFlagsApp()
 }
+
+
 
 
 
