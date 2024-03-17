@@ -1,20 +1,31 @@
 package com.example.guessing_country_flags
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.IOException
+import java.util.*
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,15 +47,35 @@ fun CountryFlagsApp() {
         composable("guessCountryGame") {
             GuessCountryGameScreen(navController)
         }
-        // Add more screens as needed
+        composable("guessHintsGame") {
+            GuessHintsGameScreen(navController)
+        }
+        composable("guessFlagGame") {
+            GuessFlagGameScreen(navController)
+        }
+        composable("advancedLevelGame") {
+            AdvancedLevelGameScreen(navController)
+        }
     }
+}
 
+@Composable
+fun AdvancedLevelGameScreen(navController: NavHostController) {
+    // Not implemented yet
+}
+
+@Composable
+fun GuessFlagGameScreen(navController: NavHostController) {
+    // Not implemented yet
+}
+
+@Composable
+fun GuessHintsGameScreen(navController: NavHostController) {
+    // Not implemented yet
 }
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    var selectedCategory by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +85,6 @@ fun HomeScreen(navController: NavController) {
     ) {
         Button(
             onClick = {
-                selectedCategory = "Guess the Country"
                 navController.navigate("guessCountryGame")
             },
             modifier = Modifier
@@ -65,7 +95,9 @@ fun HomeScreen(navController: NavController) {
         }
 
         Button(
-            onClick = { selectedCategory = "Guess-Hints" },
+            onClick = {
+                navController.navigate("guessHintsGame")
+            },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
@@ -74,7 +106,9 @@ fun HomeScreen(navController: NavController) {
         }
 
         Button(
-            onClick = { selectedCategory = "Guess the Flag" },
+            onClick = {
+                navController.navigate("guessFlagGame")
+            },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
@@ -83,7 +117,9 @@ fun HomeScreen(navController: NavController) {
         }
 
         Button(
-            onClick = { selectedCategory = "Advanced Level" },
+            onClick = {
+                navController.navigate("advancedLevelGame")
+            },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
@@ -95,6 +131,14 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun GuessCountryGameScreen(navController: NavController) {
+    val context = LocalContext.current
+    val countriesJsonArray = JSONObject( readTextFromAssets(context, "countries.json"))
+
+    var selectedCountryIndex by remember { mutableStateOf(-1) }
+//    val countryFlags = loadCountryFlags()
+    val randomCountry = remember { countriesJsonArray.keys().asSequence().toList().random() }
+//    val randomCountry = remember { countryFlags[randomIndex] }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,15 +146,132 @@ fun GuessCountryGameScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Guess the Country Game Screen")
+        Text(text = "Guess the Country Flag")
+        Image(
+            painter = painterResource(id = getDrawableResourceId(randomCountry.lowercase())),
+            contentDescription = "Country Flag"
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+//        Button(
+//            onClick = {
+//                if (selectedCountryIndex != -1) {
+//                    val isCorrect = selectedCountryIndex == randomIndex
+//                    val message = if (isCorrect) "Correct!" else "Incorrect!"
+////                    Toast.makeText(
+////                        LocalContext.current,
+////                        message,
+////                        Toast.LENGTH_SHORT
+////                    ).show()
+//                }
+//            },
+//            modifier = Modifier
+//                .padding(8.dp)
+//                .fillMaxWidth()
+//        ) {
+//            Text("Submit")
+//        }
+
+//        CountryList(
+//            countries = countriesJsonArray.keys().forEach { key ->
+//                                                          countriesJsonArray.get(key)
+//            },
+//            onCountrySelected = { index ->
+//                selectedCountryIndex = index
+//            }
+//        )
     }
 }
+
+data class CountryFlag(val flagId: Int, val countryName: String)
+
+@Composable
+fun CountryList(countries: List<String>, onCountrySelected: (Int) -> Unit) {
+    Column {
+        for (i in countries.indices) {
+            Button(
+                onClick = { onCountrySelected(i) },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(countries[i])
+            }
+        }
+    }
+}
+
+//@Composable
+//fun loadCountryFlags(): List<CountryFlag> {
+//    val countryFlags = mutableListOf<CountryFlag>()
+//    val context = LocalContext.current
+////    Log.d("1", readTextFromAssets(context, "countries.json"))
+//    val countriesJsonArray = JSONObject( readTextFromAssets(context, "countries.json"))
+////    Log.d("json", countriesJsonArray["AE"].toString())
+////    for (i in 0 until countriesJsonArray.length()) {
+////        val countryKeys = countriesJsonArray.keys()
+//////        val countryCode = countriesJsonArray[countryKeys[i]].toLowerCase(Locale.ROOT)
+//////        val countryName = countriesJsonArray.getString("name")
+////        val flagId = getDrawableResourceId(countriesJsonArray[countryKeys[i]].toString())
+////        if (flagId != 0) {
+////            countryFlags.add(CountryFlag(flagId, countryName))
+////        }
+////    }
+////    return countryFlags
+//}
+
+
+fun getDrawableResourceId(countryCode: String): Int {
+    return try {
+        R.drawable::class.java.getField(countryCode).getInt(null)
+    } catch (e: Exception) {
+        0
+    }
+}
+
+fun loadJsonStringFromAsset(fileName: String): String {
+    return try {
+        val inputStream = MainActivity::class.java.classLoader!!.getResourceAsStream(fileName)
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+        String(buffer, Charsets.UTF_8)
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+fun readTextFromAssets(context: Context, fileName: String): String {
+    return try {
+        val inputStream = context.assets.open(fileName)
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+        String(buffer, Charsets.UTF_8)
+    } catch (e: IOException) {
+        Log.e("AssetReader", "Error reading $fileName from assets", e)
+        ""
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     CountryFlagsApp()
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
