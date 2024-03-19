@@ -6,7 +6,9 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -21,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.guessing_country_flags.ui.theme.Guessing_Country_FlagsTheme
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
@@ -31,7 +34,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CountryFlagsApp()
+            Guessing_Country_FlagsTheme {
+                CountryFlagsApp()
+
+            }
+
         }
     }
 }
@@ -146,17 +153,18 @@ fun GuessCountryGameScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Guess the Country Flag")
+        Text(text = "Guess the Country Flag",modifier= Modifier.padding(10.dp))
         Image(
             painter = painterResource(id = getDrawableResourceId(randomCountry.lowercase())),
             contentDescription = "Country Flag"
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+
 //        Button(
 //            onClick = {
 //                if (selectedCountryIndex != -1) {
-//                    val isCorrect = selectedCountryIndex == randomIndex
+//                    val isCorrect =
 //                    val message = if (isCorrect) "Correct!" else "Incorrect!"
 ////                    Toast.makeText(
 ////                        LocalContext.current,
@@ -172,14 +180,12 @@ fun GuessCountryGameScreen(navController: NavController) {
 //            Text("Submit")
 //        }
 
-//        CountryList(
-//            countries = countriesJsonArray.keys().forEach { key ->
-//                                                          countriesJsonArray.get(key)
-//            },
-//            onCountrySelected = { index ->
-//                selectedCountryIndex = index
-//            }
-//        )
+        CountryList(
+            countries = countriesJsonArray.keys().asSequence().toList().map { countriesJsonArray[it] as String }.toList(),
+            onCountrySelected = { index ->
+                selectedCountryIndex = index
+            }
+        )
     }
 }
 
@@ -187,19 +193,31 @@ data class CountryFlag(val flagId: Int, val countryName: String)
 
 @Composable
 fun CountryList(countries: List<String>, onCountrySelected: (Int) -> Unit) {
-    Column {
-        for (i in countries.indices) {
-            Button(
-                onClick = { onCountrySelected(i) },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(countries[i])
-            }
+    LazyColumn {
+        items(countries.size) { index ->
+            CountryItem(
+                country = countries[index],
+                onItemClick = { onCountrySelected(index) }
+            )
         }
     }
 }
+
+@Composable
+fun CountryItem(country: String, onItemClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .clickable(onClick = onItemClick)
+    ) {
+        Text(
+            text = country,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
 
 //@Composable
 //fun loadCountryFlags(): List<CountryFlag> {
