@@ -10,7 +10,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,11 +29,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.guessing_country_flags.ui.theme.Guessing_Country_FlagsTheme
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
-import java.util.*
-import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,13 +45,30 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountryFlagsApp() {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "home") {
         composable("home") {
-            HomeScreen(navController)
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            titleContentColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        title = {
+                            Text("Small Top App Bar")
+                        }
+                    )
+                },
+            ) { innerPadding ->
+                HomeScreen(navController, innerPadding)
+
+            }
+
         }
         composable("guessCountryGame") {
             GuessCountryGameScreen(navController)
@@ -82,11 +101,12 @@ fun GuessHintsGameScreen(navController: NavHostController) {
 }
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -139,12 +159,11 @@ fun HomeScreen(navController: NavController) {
 @Composable
 fun GuessCountryGameScreen(navController: NavController) {
     val context = LocalContext.current
-    val countriesJsonArray = JSONObject( readTextFromAssets(context, "countries.json"))
+    val countriesJsonArray = JSONObject(readTextFromAssets(context, "countries.json"))
 
     var selectedCountryIndex by remember { mutableStateOf(-1) }
-//    val countryFlags = loadCountryFlags()
+
     val randomCountry = remember { countriesJsonArray.keys().asSequence().toList().random() }
-//    val randomCountry = remember { countryFlags[randomIndex] }
 
     Column(
         modifier = Modifier
@@ -153,35 +172,15 @@ fun GuessCountryGameScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Guess the Country Flag",modifier= Modifier.padding(10.dp))
+        Text(text = "Guess the Country Flag", modifier = Modifier.padding(10.dp))
         Image(
             painter = painterResource(id = getDrawableResourceId(randomCountry.lowercase())),
             contentDescription = "Country Flag"
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-
-//        Button(
-//            onClick = {
-//                if (selectedCountryIndex != -1) {
-//                    val isCorrect =
-//                    val message = if (isCorrect) "Correct!" else "Incorrect!"
-////                    Toast.makeText(
-////                        LocalContext.current,
-////                        message,
-////                        Toast.LENGTH_SHORT
-////                    ).show()
-//                }
-//            },
-//            modifier = Modifier
-//                .padding(8.dp)
-//                .fillMaxWidth()
-//        ) {
-//            Text("Submit")
-//        }
-
         CountryList(
-            countries = countriesJsonArray.keys().asSequence().toList().map { countriesJsonArray[it] as String }.toList(),
+            countries = countriesJsonArray.keys().asSequence().toList().map { it as String },
             onCountrySelected = { index ->
                 selectedCountryIndex = index
             }
@@ -218,45 +217,11 @@ fun CountryItem(country: String, onItemClick: () -> Unit) {
     }
 }
 
-
-//@Composable
-//fun loadCountryFlags(): List<CountryFlag> {
-//    val countryFlags = mutableListOf<CountryFlag>()
-//    val context = LocalContext.current
-////    Log.d("1", readTextFromAssets(context, "countries.json"))
-//    val countriesJsonArray = JSONObject( readTextFromAssets(context, "countries.json"))
-////    Log.d("json", countriesJsonArray["AE"].toString())
-////    for (i in 0 until countriesJsonArray.length()) {
-////        val countryKeys = countriesJsonArray.keys()
-//////        val countryCode = countriesJsonArray[countryKeys[i]].toLowerCase(Locale.ROOT)
-//////        val countryName = countriesJsonArray.getString("name")
-////        val flagId = getDrawableResourceId(countriesJsonArray[countryKeys[i]].toString())
-////        if (flagId != 0) {
-////            countryFlags.add(CountryFlag(flagId, countryName))
-////        }
-////    }
-////    return countryFlags
-//}
-
-
 fun getDrawableResourceId(countryCode: String): Int {
     return try {
         R.drawable::class.java.getField(countryCode).getInt(null)
     } catch (e: Exception) {
         0
-    }
-}
-
-fun loadJsonStringFromAsset(fileName: String): String {
-    return try {
-        val inputStream = MainActivity::class.java.classLoader!!.getResourceAsStream(fileName)
-        val size = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
-        String(buffer, Charsets.UTF_8)
-    } catch (e: Exception) {
-        ""
     }
 }
 
@@ -274,24 +239,9 @@ fun readTextFromAssets(context: Context, fileName: String): String {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     CountryFlagsApp()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
