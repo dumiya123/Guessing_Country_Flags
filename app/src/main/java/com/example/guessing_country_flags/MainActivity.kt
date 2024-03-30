@@ -9,9 +9,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -19,8 +21,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -51,7 +55,8 @@ fun CountryFlagsApp() {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "home") {
-        composable("home") {
+        composable("home")
+        {
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -60,7 +65,10 @@ fun CountryFlagsApp() {
                             titleContentColor = MaterialTheme.colorScheme.primary,
                         ),
                         title = {
-                            Text("Small Top App Bar")
+                            Text(
+                                text="COUNTRY FLAGS GAME",
+                                textAlign = TextAlign.Center
+                            )
                         }
                     )
                 },
@@ -70,10 +78,52 @@ fun CountryFlagsApp() {
             }
 
         }
-        composable("guessCountryGame") {
-            GuessCountryGameScreen(navController)
+        composable("guessCountryGame")
+        {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            titleContentColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        title = {
+                            Text(
+                                text="Guess Country Flags",
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    )
+                },
+            ) { innerPadding ->
+                GuessCountryGameScreen(navController,innerPadding)
+
+            }
+
         }
-        composable("guessHintsGame") {
+        composable("guessHintsGame")
+        {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            titleContentColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        title = {
+                            Text(
+                                text="Guess Country Flags",
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    )
+                },
+            ) { innerPadding ->
+                GuessCountryGameScreen(navController,innerPadding)
+
+            }
+
+
             GuessHintsGameScreen(navController)
         }
         composable("guessFlagGame") {
@@ -157,41 +207,77 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
 }
 
 @Composable
-fun GuessCountryGameScreen(navController: NavController) {
+fun GuessCountryGameScreen(navController: NavController, innerPadding: PaddingValues) {
     val context = LocalContext.current
-    val countriesJsonArray = JSONObject(readTextFromAssets(context, "countries.json"))
+    val countriesJson = JSONObject(readTextFromAssets(context, "countries.json"))
 
     var selectedCountryIndex by remember { mutableStateOf(-1) }
+    var submittedGuess by remember { mutableStateOf(false) }
+    var correctGuess by remember { mutableStateOf(false) }
+    val randomCountryCode by remember { mutableStateOf(countriesJson.keys().asSequence().toList().random()) }
 
-    val randomCountry = remember { countriesJsonArray.keys().asSequence().toList().random() }
+    // Get the country name corresponding to the random country code
+    val randomCountryName = countriesJson.optString(randomCountryCode)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(innerPadding),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Text(text = "Guess the Country Flag", modifier = Modifier.padding(10.dp))
+
+        Spacer(modifier = Modifier.height(30.dp))
+
         Image(
-            painter = painterResource(id = getDrawableResourceId(randomCountry.lowercase())),
+            painter = painterResource(id = getDrawableResourceId(randomCountryCode.lowercase())),
             contentDescription = "Country Flag"
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Pass all country names directly
         CountryList(
-            countries = countriesJsonArray.keys().asSequence().toList().map { it as String },
+            countries = countriesJson.keys().asSequence().toList().map { countriesJson.optString(it) },
             onCountrySelected = { index ->
                 selectedCountryIndex = index
             }
         )
+
+
+        // Submit button, enabled only when a country is selected
+        Button(
+            onClick = {
+                if (selectedCountryIndex != -1) { // Check if a country is selected
+                    correctGuess = selectedCountryIndex == countriesJson.keys().asSequence().indexOf(randomCountryCode)
+                    submittedGuess = true
+                }
+            },
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            enabled = selectedCountryIndex != -1 // Enable button only when a country is selected
+        ) {
+            Text("Submit")
+        }
+
+        // Display the random country name only if the guess is submitted
+        if (submittedGuess) {
+            if (correctGuess) {
+                Text(text = "Congratulations! Your guess is correct.", modifier = Modifier.padding(10.dp))
+            } else {
+                Text(text = "Sorry, your guess is incorrect. The correct answer was ${countriesJson.optString(randomCountryCode)}.", modifier = Modifier.padding(10.dp))
+            }
+        }
     }
 }
 
-data class CountryFlag(val flagId: Int, val countryName: String)
+
 
 @Composable
 fun CountryList(countries: List<String>, onCountrySelected: (Int) -> Unit) {
+
     LazyColumn {
         items(countries.size) { index ->
             CountryItem(
@@ -216,6 +302,7 @@ fun CountryItem(country: String, onItemClick: () -> Unit) {
         )
     }
 }
+
 
 fun getDrawableResourceId(countryCode: String): Int {
     return try {

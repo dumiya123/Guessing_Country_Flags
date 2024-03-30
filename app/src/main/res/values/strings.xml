@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Guessing_Country_Flags</string>
+    <string name="title_activity_guessthe_country">GuesstheCountry</string>
+    <string name="title_activity_main2">MainActivity2</string>
 </resources>
