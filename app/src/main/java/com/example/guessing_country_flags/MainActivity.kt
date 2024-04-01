@@ -1,6 +1,7 @@
 package com.example.guessing_country_flags
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -37,11 +38,30 @@ import org.json.JSONObject
 import java.io.IOException
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Guessing_Country_FlagsTheme {
-                CountryFlagsApp()
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                titleContentColor = MaterialTheme.colorScheme.primary,
+                            ),
+                            title = {
+                                Text(
+                                    text="COUNTRY FLAGS GAME",
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        )
+                    },
+                ) { innerPadding ->
+                    HomeScreen(innerPadding)
+
+                }
 
             }
 
@@ -49,91 +69,91 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CountryFlagsApp() {
-    val navController = rememberNavController()
-
-    NavHost(navController, startDestination = "home") {
-        composable("home")
-        {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            titleContentColor = MaterialTheme.colorScheme.primary,
-                        ),
-                        title = {
-                            Text(
-                                text="COUNTRY FLAGS GAME",
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    )
-                },
-            ) { innerPadding ->
-                HomeScreen(navController, innerPadding)
-
-            }
-
-        }
-        composable("guessCountryGame")
-        {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            titleContentColor = MaterialTheme.colorScheme.primary,
-                        ),
-                        title = {
-                            Text(
-                                text="Guess Country Flags",
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    )
-                },
-            ) { innerPadding ->
-                GuessCountryGameScreen(navController,innerPadding)
-
-            }
-
-        }
-        composable("guessHintsGame")
-        {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            titleContentColor = MaterialTheme.colorScheme.primary,
-                        ),
-                        title = {
-                            Text(
-                                text="Guess Country Flags",
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    )
-                },
-            ) { innerPadding ->
-                GuessCountryGameScreen(navController,innerPadding)
-
-            }
-
-
-            GuessHintsGameScreen(navController)
-        }
-        composable("guessFlagGame") {
-            GuessFlagGameScreen(navController)
-        }
-        composable("advancedLevelGame") {
-            AdvancedLevelGameScreen(navController)
-        }
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun CountryFlagsApp() {
+//    val navController = rememberNavController()
+//
+//    NavHost(navController, startDestination = "home") {
+//        composable("home")
+//        {
+//            Scaffold(
+//                topBar = {
+//                    TopAppBar(
+//                        colors = TopAppBarDefaults.topAppBarColors(
+//                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                            titleContentColor = MaterialTheme.colorScheme.primary,
+//                        ),
+//                        title = {
+//                            Text(
+//                                text="COUNTRY FLAGS GAME",
+//                                textAlign = TextAlign.Center
+//                            )
+//                        }
+//                    )
+//                },
+//            ) { innerPadding ->
+//                HomeScreen(navController, innerPadding)
+//
+//            }
+//
+//        }
+//        composable("guessCountryGame")
+//        {
+//            Scaffold(
+//                topBar = {
+//                    TopAppBar(
+//                        colors = TopAppBarDefaults.topAppBarColors(
+//                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                            titleContentColor = MaterialTheme.colorScheme.primary,
+//                        ),
+//                        title = {
+//                            Text(
+//                                text="Guess Country Flags",
+//                                textAlign = TextAlign.Center
+//                            )
+//                        }
+//                    )
+//                },
+//            ) { innerPadding ->
+//                GuessCountryGameScreen(navController,innerPadding)
+//
+//            }
+//
+//        }
+//        composable("guessHintsGame")
+//        {
+//            Scaffold(
+//                topBar = {
+//                    TopAppBar(
+//                        colors = TopAppBarDefaults.topAppBarColors(
+//                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                            titleContentColor = MaterialTheme.colorScheme.primary,
+//                        ),
+//                        title = {
+//                            Text(
+//                                text="Guess Country Flags",
+//                                textAlign = TextAlign.Center
+//                            )
+//                        }
+//                    )
+//                },
+//            ) { innerPadding ->
+//                GuessCountryGameScreen(navController,innerPadding)
+//
+//            }
+//
+//
+//            GuessHintsGameScreen(navController)
+//        }
+//        composable("guessFlagGame") {
+//            GuessFlagGameScreen(navController)
+//        }
+//        composable("advancedLevelGame") {
+//            AdvancedLevelGameScreen(navController)
+//        }
+//    }
+//}
 
 @Composable
 fun AdvancedLevelGameScreen(navController: NavHostController) {
@@ -151,8 +171,8 @@ fun GuessHintsGameScreen(navController: NavHostController) {
 }
 
 @Composable
-fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
-
+fun HomeScreen(innerPadding: PaddingValues) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -162,7 +182,9 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
     ) {
         Button(
             onClick = {
-                navController.navigate("guessCountryGame")
+//                navController.navigate("guessCountryGame")
+                      val i = Intent(context, MainActivity2::class.java)
+                context.startActivity(i)
             },
             modifier = Modifier
                 .padding(8.dp)
@@ -173,18 +195,18 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
 
         Button(
             onClick = {
-                navController.navigate("guessHintsGame")
+//                navController.navigate("guessHintsGame")
             },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            Text("Guess-Hints")
+            Text("Guess_Hints")
         }
 
         Button(
             onClick = {
-                navController.navigate("guessFlagGame")
+//                navController.navigate("guessFlagGame")
             },
             modifier = Modifier
                 .padding(8.dp)
@@ -195,7 +217,7 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
 
         Button(
             onClick = {
-                navController.navigate("advancedLevelGame")
+//                navController.navigate("advancedLevelGame")
             },
             modifier = Modifier
                 .padding(8.dp)
@@ -206,129 +228,11 @@ fun HomeScreen(navController: NavController, innerPadding: PaddingValues) {
     }
 }
 
-@Composable
-fun GuessCountryGameScreen(navController: NavController, innerPadding: PaddingValues) {
-    val context = LocalContext.current
-    val countriesJson = JSONObject(readTextFromAssets(context, "countries.json"))
-
-    var selectedCountryIndex by remember { mutableStateOf(-1) }
-    var submittedGuess by remember { mutableStateOf(false) }
-    var correctGuess by remember { mutableStateOf(false) }
-    val randomCountryCode by remember { mutableStateOf(countriesJson.keys().asSequence().toList().random()) }
-
-    // Get the country name corresponding to the random country code
-    val randomCountryName = countriesJson.optString(randomCountryCode)
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Text(text = "Guess the Country Flag", modifier = Modifier.padding(10.dp))
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        Image(
-            painter = painterResource(id = getDrawableResourceId(randomCountryCode.lowercase())),
-            contentDescription = "Country Flag"
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Pass all country names directly
-        CountryList(
-            countries = countriesJson.keys().asSequence().toList().map { countriesJson.optString(it) },
-            onCountrySelected = { index ->
-                selectedCountryIndex = index
-            }
-        )
 
 
-        // Submit button, enabled only when a country is selected
-        Button(
-            onClick = {
-                if (selectedCountryIndex != -1) { // Check if a country is selected
-                    correctGuess = selectedCountryIndex == countriesJson.keys().asSequence().indexOf(randomCountryCode)
-                    submittedGuess = true
-                }
-            },
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            enabled = selectedCountryIndex != -1 // Enable button only when a country is selected
-        ) {
-            Text("Submit")
-        }
-
-        // Display the random country name only if the guess is submitted
-        if (submittedGuess) {
-            if (correctGuess) {
-                Text(text = "Congratulations! Your guess is correct.", modifier = Modifier.padding(10.dp))
-            } else {
-                Text(text = "Sorry, your guess is incorrect. The correct answer was ${countriesJson.optString(randomCountryCode)}.", modifier = Modifier.padding(10.dp))
-            }
-        }
-    }
-}
-
-
-
-@Composable
-fun CountryList(countries: List<String>, onCountrySelected: (Int) -> Unit) {
-
-    LazyColumn {
-        items(countries.size) { index ->
-            CountryItem(
-                country = countries[index],
-                onItemClick = { onCountrySelected(index) }
-            )
-        }
-    }
-}
-
-@Composable
-fun CountryItem(country: String, onItemClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .clickable(onClick = onItemClick)
-    ) {
-        Text(
-            text = country,
-            modifier = Modifier.padding(16.dp)
-        )
-    }
-}
-
-
-fun getDrawableResourceId(countryCode: String): Int {
-    return try {
-        R.drawable::class.java.getField(countryCode).getInt(null)
-    } catch (e: Exception) {
-        0
-    }
-}
-
-fun readTextFromAssets(context: Context, fileName: String): String {
-    return try {
-        val inputStream = context.assets.open(fileName)
-        val size = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
-        String(buffer, Charsets.UTF_8)
-    } catch (e: IOException) {
-        Log.e("AssetReader", "Error reading $fileName from assets", e)
-        ""
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CountryFlagsApp()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    CountryFlagsApp()
+//}
 
