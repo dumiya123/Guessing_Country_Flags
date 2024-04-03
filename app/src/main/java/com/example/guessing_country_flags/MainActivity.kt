@@ -33,7 +33,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.guessing_country_flags.ui.theme.Guessing_Country_FlagsTheme
+//import com.example.guessing_country_flags.ui.theme.Guessing_Country_FlagsTheme
 import org.json.JSONObject
 import java.io.IOException
 
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Guessing_Country_FlagsTheme {
+//            Guessing_Country_FlagsTheme {
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
                 }
 
-            }
+//            }
 
         }
     }
@@ -183,25 +183,27 @@ fun HomeScreen(innerPadding: PaddingValues) {
         Button(
             onClick = {
 //                navController.navigate("guessCountryGame")
-                      val i = Intent(context, MainActivity2::class.java)
+                val i = Intent(context, MainActivity2::class.java)
                 context.startActivity(i)
             },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            Text("Guess the Country")
+            Text("GUESS THE COUNTRY")
         }
 
         Button(
             onClick = {
 //                navController.navigate("guessHintsGame")
+                val j = Intent(context, MainActivity3::class.java)
+                context.startActivity(j)
             },
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            Text("Guess_Hints")
+            Text("GUESS HINTS")
         }
 
         Button(
@@ -212,7 +214,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            Text("Guess the Flag")
+            Text("GUESS THE FLAG")
         }
 
         Button(
@@ -223,7 +225,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
                 .padding(8.dp)
                 .fillMaxWidth()
         ) {
-            Text("Advanced Level")
+            Text("ADVANCED LEVEL")
         }
     }
 }
