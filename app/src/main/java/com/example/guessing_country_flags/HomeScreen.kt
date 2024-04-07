@@ -1,20 +1,13 @@
 package com.example.guessing_country_flags
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,20 +15,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 //import com.example.guessing_country_flags.ui.theme.Guessing_Country_FlagsTheme
-import org.json.JSONObject
-import java.io.IOException
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +35,7 @@ class MainActivity : ComponentActivity() {
                             ),
                             title = {
                                 Text(
-                                    text="COUNTRY FLAGS GAME",
+                                    text="WELCOME TO HOME!!!",
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -155,20 +138,7 @@ class MainActivity : ComponentActivity() {
 //    }
 //}
 
-@Composable
-fun AdvancedLevelGameScreen(navController: NavHostController) {
-    // Not implemented yet
-}
 
-@Composable
-fun GuessFlagGameScreen(navController: NavHostController) {
-    // Not implemented yet
-}
-
-@Composable
-fun GuessHintsGameScreen(navController: NavHostController) {
-    // Not implemented yet
-}
 
 @Composable
 fun HomeScreen(innerPadding: PaddingValues) {
@@ -182,7 +152,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
     ) {
         Button(
             onClick = {
-//                navController.navigate("guessCountryGame")
+
                 val i = Intent(context, MainActivity2::class.java)
                 context.startActivity(i)
             },
@@ -195,7 +165,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
 
         Button(
             onClick = {
-//                navController.navigate("guessHintsGame")
+
                 val j = Intent(context, MainActivity3::class.java)
                 context.startActivity(j)
             },
@@ -208,7 +178,9 @@ fun HomeScreen(innerPadding: PaddingValues) {
 
         Button(
             onClick = {
-//                navController.navigate("guessFlagGame")
+                val k=Intent(context,MainActivity4::class.java)
+                context.startActivity(k)
+
             },
             modifier = Modifier
                 .padding(8.dp)
@@ -219,7 +191,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
 
         Button(
             onClick = {
-//                navController.navigate("advancedLevelGame")
+
             },
             modifier = Modifier
                 .padding(8.dp)
