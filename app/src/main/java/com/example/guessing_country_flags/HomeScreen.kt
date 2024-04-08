@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,6 +16,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -146,7 +148,8 @@ fun HomeScreen(innerPadding: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding),
+            .padding(innerPadding).background(Color.LightGray),
+
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -191,6 +194,8 @@ fun HomeScreen(innerPadding: PaddingValues) {
 
         Button(
             onClick = {
+                      val l=Intent(context,MainActivity5::class.java)
+                context.startActivity(l)
 
             },
             modifier = Modifier

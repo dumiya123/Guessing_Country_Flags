@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -135,7 +136,11 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
 
     // UI Composable starts here
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPadding), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize()
+            .padding(innerPadding)
+            .background(Color.LightGray),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) 
     {
         // Display the correct country name
@@ -157,6 +162,7 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
                 modifier = Modifier
                     .size(180.dp) // Adjust the size of flag images
                     .padding(2.dp) // Add some padding around each flag
+                    .background(Color.LightGray)
                     .clickable { onFlagClick(countries_json.optString(countryCode)) }
             )
         }

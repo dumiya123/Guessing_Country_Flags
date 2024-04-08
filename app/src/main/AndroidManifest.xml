@@ -13,6 +13,16 @@
         android:theme="@style/Theme.Guessing_Country_Flags"
         tools:targetApi="31">
         <activity
+            android:name=".MainActivity5"
+            android:exported="false"
+            android:label="@string/title_activity_main5"
+            android:theme="@style/Theme.Guessing_Country_Flags" />
+        <activity
+            android:name=".AdvancedLevelButton"
+            android:exported="false"
+            android:label="@string/title_activity_advanced_level_button"
+            android:theme="@style/Theme.Guessing_Country_Flags" />
+        <activity
             android:name=".MainActivity4"
             android:exported="false"
             android:label="@string/title_activity_main4"
