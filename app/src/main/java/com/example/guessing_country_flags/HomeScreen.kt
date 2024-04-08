@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -145,14 +146,28 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HomeScreen(innerPadding: PaddingValues) {
     val context = LocalContext.current
+
+    var timerEnabled by remember {
+
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding).background(Color.LightGray),
+            .padding(innerPadding)
+            .background(Color.LightGray),
 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+        Switch(
+            checked = timerEnabled,
+            onCheckedChange = { timerEnabled = it }, // Toggle timer flag
+            modifier = Modifier.padding(8.dp)
+        )
+
         Button(
             onClick = {
 
