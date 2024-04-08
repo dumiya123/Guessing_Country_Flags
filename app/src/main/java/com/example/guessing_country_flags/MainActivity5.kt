@@ -50,8 +50,8 @@ class MainActivity5 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-//            Guessing_Country_FlagsTheme {
-                // A surface container using the 'background' color from the theme
+
+            // A surface container using the 'background' color from the theme
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -64,7 +64,6 @@ class MainActivity5 : ComponentActivity() {
                             Text(
                                 text="THE ADVANCED FLAG SCREEN",
                                 textAlign = TextAlign.Center
-
                             )
                         }
                     )
@@ -75,7 +74,7 @@ class MainActivity5 : ComponentActivity() {
             }
 
             }
-//        }
+
     }
 }
 
