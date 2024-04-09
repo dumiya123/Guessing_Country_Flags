@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +56,7 @@ class MainActivity4 : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 //            Guessing_Country_FlagsTheme {
-                // A surface container using the 'background' color from the theme
+
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -90,21 +93,21 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
     val countries_json = JSONObject(readTextFromAssets(context, "countries.json"))
 
     // Define mutable state variables to track game state
-    var name_of_the_correct_country by remember {
+    var name_of_the_correct_country by rememberSaveable {
 
         mutableStateOf("")
 
     }
-    var name_of_the_selected_country by remember {
+    var name_of_the_selected_country by rememberSaveable {
 
         mutableStateOf("")
 
     }
-    var display_correct_message by remember {
+    var display_correct_message by rememberSaveable {
 
         mutableStateOf(false)
     }
-    var country_flags_pairs by remember {
+    var country_flags_pairs by rememberSaveable {
 
         mutableStateOf(listOf<Pair<String, String>>())
 
@@ -120,7 +123,7 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
         }
     }
 
-    
+    //check if the list of country flag pair is empty.
     if (country_flags_pairs.isEmpty()) 
     {
         country_flags_pairs = generatecountry_flags_pairs()
@@ -130,33 +133,38 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
     // this function will handle country flag click event
     fun onFlagClick(name_of_the_country: String) 
     {
-        name_of_the_selected_country = name_of_the_country
-        display_correct_message = true
+        name_of_the_selected_country = name_of_the_country // this will set the name of the selected country to a variable.
+        display_correct_message = true  // set flag to display correct message
     }
 
-    // UI Composable starts here
+    // Composable column to layout UI components vertically.
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(innerPadding)
+            .verticalScroll(rememberScrollState())
             .background(Color.LightGray),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) 
     {
+
         // Display the correct country name
+
         Text(
             text = name_of_the_correct_country,
             modifier = Modifier.padding(bottom = 16.dp),
             style = androidx.compose.ui.text.TextStyle(
-                fontSize = 24.sp, // Increase font size to 24 sp
-                fontWeight = FontWeight.Bold // Apply bold style
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
             )
         )
 
         // this code will responsible for showing flag images vertically.
-        country_flags_pairs.forEach { (countryCode, _) ->
+
+        country_flags_pairs.forEach { (countryCode, _) -> // iterating over each country flag pair in the list.
             val resourceId = getDrawableResourceId(countryCode.lowercase())
-            Image(
+            Image(  //this will show flag image using the image composable.
                 painter = painterResource(id = resourceId),
                 contentDescription = "Country Flag",
                 modifier = Modifier
@@ -168,15 +176,20 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
         }
 
         // Display the "Next" button
+
         Button(
             onClick = {
+
                 //  below code will reset state for the next round for the user
                 name_of_the_selected_country = ""
                 display_correct_message = false
+
                 // this will generate new set of flag-country pairs
                 country_flags_pairs = generatecountry_flags_pairs()
+
                 // select one of the country names as the correct answer.
                 name_of_the_correct_country = country_flags_pairs.random().second
+
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -184,9 +197,13 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
         }
 
         // below code will display message based on user's click.
+
         if (display_correct_message)
         {
+            //this line will decide the message based on if selected country is correct.
             val message = if (name_of_the_selected_country == name_of_the_correct_country) "CORRECT!" else "WRONG!"
+
+            //this line will decide the color based on if selected country is correct.
             val color = if (name_of_the_selected_country == name_of_the_correct_country) Color.Green else Color.Red
             Text(
                 text = message,

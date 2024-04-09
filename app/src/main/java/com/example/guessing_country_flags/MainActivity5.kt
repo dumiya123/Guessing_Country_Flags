@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,63 +72,71 @@ class MainActivity5 : ComponentActivity() {
                     )
                 },
             ) { innerPadding ->
+
                 AdvancedFlagsScreen(innerPadding)
 
             }
 
-            }
+
+        }
 
     }
 }
 
+/**
+ * This function will create advanced Flags Screen.
+ */
 @Composable
 fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
+
+
     val context = LocalContext.current
     val countries_json = JSONObject(readTextFromAssets(context, "countries.json"))
 
-    var correct_answers_of_user by remember {
-
-        mutableStateOf(0)
-
-
-    }
-    var user_incorrect_attempts by remember {
+   //Declare state variables to track user interactions and game state
+    var correct_answers_of_user by rememberSaveable {
 
         mutableStateOf(0)
 
     }
-    var user_submitted_guess by remember {
+    var user_incorrect_attempts by rememberSaveable {
+
+        mutableStateOf(0)
+
+    }
+    var user_submitted_guess by rememberSaveable {
 
         mutableStateOf(false)
 
     }
-    var guesses_by_user by remember {
+    var guesses_by_user by rememberSaveable {
 
         mutableStateOf(listOf("", "", ""))
 
     }
-    var country_flag_Pairs by remember {
+    var country_flag_Pairs by rememberSaveable {
 
         mutableStateOf(listOf<Pair<String, String>>())
 
     }
-    var User_score by remember {
+    var User_score by rememberSaveable {
 
         mutableStateOf(0)
 
     }
-    var Indices_of_correct_country by remember {
+    var Indices_of_correct_country by rememberSaveable {
 
         mutableStateOf<List<Int>>(listOf())
 
     }
-    var show_country_names by remember {
+    var show_country_names by rememberSaveable {
 
         mutableStateOf(false)
     }
 
     // Function to generate 3 unique random flag images and their corresponding countries
-    fun generatecountry_flag_Pairs(): List<Pair<String, String>> {
+    fun generatecountry_flag_Pairs(): List<Pair<String, String>>
+    {
         val Codes_of_countries = countries_json.keys().asSequence().toList()
         return Codes_of_countries.shuffled().distinct().take(3).map { countryCode ->
             val name_of_the_Country = countries_json.optString(countryCode)
@@ -134,19 +145,27 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
     }
 
     // Initialize flag-country pairs if not already initialized
+
     if (country_flag_Pairs.isEmpty()) {
         country_flag_Pairs = generatecountry_flag_Pairs()
     }
 
     // Function to handle submission of user answers
+
     fun onSubmit() {
         user_submitted_guess = true
         correct_answers_of_user = 0
         Indices_of_correct_country = mutableListOf()
 
         country_flag_Pairs.forEachIndexed { index, pair ->
-            val userGuess = guesses_by_user[index].trim() // Remove leading and trailing whitespaces
-            val correctname_of_the_Country = pair.second.trim() // Remove leading and trailing whitespaces
+
+            // Remove leading and trailing whitespaces
+            val userGuess = guesses_by_user[index].trim()
+
+            // Remove leading and trailing whitespaces
+            val correctname_of_the_Country = pair.second.trim()
+
+            //check if the user guess match with the correct country name.
             if (userGuess.equals(correctname_of_the_Country, ignoreCase = true)) {
                 correct_answers_of_user++
                 Indices_of_correct_country = Indices_of_correct_country.toMutableList().apply {
@@ -158,12 +177,16 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
         // Increment the User_score by the number of correct answers
         User_score += correct_answers_of_user
 
-        if (correct_answers_of_user < 3) {
+
+       //Increment user_incorrect-attempts if the number of correct answers is less than 3.
+        if (correct_answers_of_user < 3)
+        {
             user_incorrect_attempts++
         }
 
         // After 3 incorrect attempts, reset game state
-        if (user_incorrect_attempts >= 3) {
+        if (user_incorrect_attempts >= 3)
+        {
             user_incorrect_attempts = 0
             user_submitted_guess = false
             guesses_by_user = listOf("", "", "")
@@ -174,21 +197,34 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
 
     //In here starting UI components declaration
     Column(
-        modifier = Modifier.fillMaxSize().padding(innerPadding).background(Color.LightGray),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .background(Color.LightGray)
+            .verticalScroll(rememberScrollState())
+        ,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        //Iterating over each flag-pair
         country_flag_Pairs.forEachIndexed { index, (countryCode, _) ->
             val resourceId = getDrawableResourceId(countryCode.lowercase())
+
+            // Column containing flag image and text field for entering country name
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
+                //this will show flag image using the image composable.
                 Image(
                     painter = painterResource(id = resourceId),
                     contentDescription = "Country Flag",
                     modifier = Modifier.size(130.dp)
                 )
+
+                //this is the text field to enter the country name .
+
                 TextField(
                     value = guesses_by_user[index],
                     onValueChange = {
@@ -202,7 +238,7 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
                         .width(300.dp)
                         .background(if (user_submitted_guess) Color.LightGray else Color.White)
                         .border(1.dp, Color.Gray, RoundedCornerShape(5.dp)),
-                    label = { Text("Enter country name") }
+                    label = { Text("Enter the country name") }
                 )
             }
         }
@@ -215,12 +251,14 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
                 } else {
                     // Reset the state for the next round
                     user_submitted_guess = false
-                    guesses_by_user = listOf("", "", "") // Clear user guesses
+
+                    // Clear user guesses
+                    guesses_by_user = listOf("", "", "")
                     country_flag_Pairs = generatecountry_flag_Pairs() // Generate new flag-country pairs
                     show_country_names = false
                 }
             },
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 8.dp)
         ) {
             Text(if (!user_submitted_guess) "Submit" else "Next")
         }
@@ -240,7 +278,7 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
                 val correctname_of_the_Countrys = country_flag_Pairs
                     .joinToString(", ") { it.second }
                 Text(
-                    text = "Names of Correct Countries are: $correctname_of_the_Countrys",
+                    text = "Names of Correct Countries are: $correctname_of_the_Countrys", //show correct names of the country.
                     modifier = Modifier.padding(top = 8.dp),
                     color = Color.Blue
                 )
@@ -250,7 +288,7 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
         // Display user's User_score
         Text(
             text = "Your score: $User_score",
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 6.dp)
         )
     }
 }

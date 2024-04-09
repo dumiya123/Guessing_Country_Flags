@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +48,8 @@ class MainActivity : ComponentActivity() {
                     },
                 ) { innerPadding ->
                     HomeScreen(innerPadding)
+
+
 
                 }
 
@@ -141,37 +145,33 @@ class MainActivity : ComponentActivity() {
 //    }
 //}
 
-
-
+/**
+ * This function will responsible for the HomeScreen UI.
+ */
 @Composable
 fun HomeScreen(innerPadding: PaddingValues) {
     val context = LocalContext.current
 
-    var timerEnabled by remember {
 
-        mutableStateOf(false)
-    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .background(Color.LightGray),
+            .background(Color.LightGray)
+            .verticalScroll(rememberScrollState())
+        ,
 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
 
-        Switch(
-            checked = timerEnabled,
-            onCheckedChange = { timerEnabled = it }, // Toggle timer flag
-            modifier = Modifier.padding(8.dp)
-        )
+        SwitchMinimalExample()
 
         Button(
             onClick = {
 
-                val i = Intent(context, MainActivity2::class.java)
+                val i = Intent(context, MainActivity2::class.java)   //navigate to the "Guess the Country" activity
                 context.startActivity(i)
             },
             modifier = Modifier
@@ -179,12 +179,13 @@ fun HomeScreen(innerPadding: PaddingValues) {
                 .fillMaxWidth()
         ) {
             Text("GUESS THE COUNTRY")
+
         }
 
         Button(
             onClick = {
 
-                val j = Intent(context, MainActivity3::class.java)
+                val j = Intent(context, MainActivity3::class.java)  //navigate to the "GUESS HINTS" activity
                 context.startActivity(j)
             },
             modifier = Modifier
@@ -194,12 +195,15 @@ fun HomeScreen(innerPadding: PaddingValues) {
             Text("GUESS HINTS")
         }
 
+
+
         Button(
             onClick = {
-                val k=Intent(context,MainActivity4::class.java)
+                val k=Intent(context,MainActivity4::class.java) //navigate to the "GUESS THE FLAG" activity.
                 context.startActivity(k)
 
             },
+
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
@@ -209,7 +213,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
 
         Button(
             onClick = {
-                      val l=Intent(context,MainActivity5::class.java)
+                      val l=Intent(context,MainActivity5::class.java) //navigate to the "ADVANCED LEVEL" activity.
                 context.startActivity(l)
 
             },
@@ -223,10 +227,22 @@ fun HomeScreen(innerPadding: PaddingValues) {
 }
 
 
+//To create this switch button i refer https://developer.android.com/develop/ui/compose/components/switch documentation.
+@Composable
+fun SwitchMinimalExample() {
+    var checked by remember { mutableStateOf(true) }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    CountryFlagsApp()
-//}
+    Switch(
+        checked = checked,
+        onCheckedChange = {
+            checked = it
+        }
+    )
+}
+
+// @Preview(showBackground = true)
+// @Composable
+// fun DefaultPreview() {
+// CountryFlagsApp()
+// }
 

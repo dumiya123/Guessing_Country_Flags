@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +54,7 @@ class MainActivity3 : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 //            Guessing_Country_FlagsTheme {
-                // A surface container using the 'background' color from the theme
+            // A surface container using the 'background' color from the theme
             Scaffold(
                     topBar = {
                         TopAppBar(
@@ -71,6 +72,7 @@ class MainActivity3 : ComponentActivity() {
                         )
                     },
             ) { innerPadding ->
+
             GuessHintsScreen(innerPadding)
 
         }
@@ -94,50 +96,52 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
 
     //variables to hold different states of the UI
 
-    var random_country_code by remember{
+    var random_country_code by rememberSaveable{
 
         mutableStateOf(countriesJson.keys().asSequence().toList().random())
     }
 
-    var name_of_hidden_country by remember {
+    var name_of_hidden_country by rememberSaveable {
 
         mutableStateOf(countriesJson.optString(random_country_code))
     }
 
-    var user_guessed_name by remember {
+    var user_guessed_name by rememberSaveable {
 
         mutableStateOf("")
     }
 
-    var user_submitted_Guess by remember {
+    var user_submitted_Guess by rememberSaveable {
 
         mutableStateOf(false)
     }
 
-    var current by remember {
+    var current by rememberSaveable {
 
         mutableStateOf("_ ".repeat(name_of_hidden_country.length))
 
     }
-    var Error_message by remember {
+    var Error_message by rememberSaveable {
 
         mutableStateOf("")
     }
 
-    var show_error by remember {
+    var show_error by rememberSaveable {
 
         mutableStateOf(false)
     }
 
-    var user_incorrect_guesses by remember {
+    var user_incorrect_guesses by rememberSaveable {
 
         mutableStateOf(0)
     }
-    var game_ended by remember {
+    var game_ended by rememberSaveable {
 
         mutableStateOf(false)
     }
 
+
+    // Composable column to layout UI components vertically.
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -152,6 +156,8 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
 
         Spacer(modifier = Modifier.height(30.dp))
 
+
+        //This line will show a random flag to the screen.
         Image(
             painter = painterResource(id = getDrawableResourceId(random_country_code.lowercase())),
             contentDescription = "Country Flag"
@@ -159,7 +165,7 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Display dashes representing the hidden country name
+        // Display dashes representing the hidden country name.
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = current,
@@ -208,11 +214,13 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
                     user_guessed_name = new_value
                 }
             },
-            label = { Text("Enter your guess here(Hint:Enter a character)") },
+            label = { Text("Enter your guess here (Hint:Enter a character)") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             maxLines = 1
         )
+
+        //Button for submitting and go the next step
 
         Button(
             onClick = {
@@ -224,7 +232,7 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
                     }
                     else
                     {
-                        // Start a new game
+                        // below code will start a new game
                         random_country_code = countriesJson.keys().asSequence().toList().random()
                         name_of_hidden_country = countriesJson.optString(random_country_code)
                         user_guessed_name = ""
@@ -252,6 +260,7 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
             )
         }
 
+        //this line handle submitted guess by user.
         if (user_submitted_Guess)
         {
             val correct_guess = current.replace(" ", "") == name_of_hidden_country
@@ -263,6 +272,7 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
             user_submitted_Guess = false
         }
 
+        //Display a message if the game ended.
         if (game_ended)
         {
             Text(
