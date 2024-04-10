@@ -214,6 +214,7 @@ fun GuessHintsScreen(innerPadding: PaddingValues)
                     user_guessed_name = new_value
                 }
             },
+
             label = { Text("Enter your guess here (Hint:Enter a character)") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,

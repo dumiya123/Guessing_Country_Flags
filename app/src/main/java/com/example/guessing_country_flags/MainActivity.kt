@@ -1,14 +1,20 @@
+/**
+ * Video demonstration link -https://drive.google.com/file/d/1ObdQd5pgHdj9iiRX8rfEbb7xQtnhvjLc/view?usp=sharing
+ */
+
 package com.example.guessing_country_flags
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -21,9 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
 //import com.example.guessing_country_flags.ui.theme.Guessing_Country_FlagsTheme
+
+
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -47,9 +61,8 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                 ) { innerPadding ->
+
                     HomeScreen(innerPadding)
-
-
 
                 }
 
@@ -150,6 +163,10 @@ class MainActivity : ComponentActivity() {
  */
 @Composable
 fun HomeScreen(innerPadding: PaddingValues) {
+
+    val red = 255
+    val green = 0
+    val blue = 255
     val context = LocalContext.current
 
 
@@ -158,7 +175,7 @@ fun HomeScreen(innerPadding: PaddingValues) {
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .background(Color.LightGray)
+            .background(Color.DarkGray)
             .verticalScroll(rememberScrollState())
         ,
 
@@ -166,7 +183,31 @@ fun HomeScreen(innerPadding: PaddingValues) {
         verticalArrangement = Arrangement.Center
     ) {
 
+
         SwitchMinimalExample()
+
+        Image(
+            painter = painterResource(id = R.drawable.home),
+            contentDescription = null,
+            modifier = Modifier
+                .size(200.dp) // Adjust size as needed
+                .padding(bottom = 8.dp) // Add padding to separate image and text
+        )
+
+        Text(
+            text = "LET'S GET STARTED!!!",
+            modifier = Modifier.padding(vertical = 42.dp), // Increase vertical padding to move the text more upward
+            fontSize = 28.sp, // Increase the font size
+            fontWeight = FontWeight.Bold, // Make the font bold
+            fontFamily = FontFamily.Monospace,
+            fontStyle = FontStyle.Italic,
+            color = Color(red, green, blue),
+            textAlign = TextAlign.Center // Center align the text horizontally
+        )
+
+        Spacer(modifier = Modifier.height(25.dp))
+
+
 
         Button(
             onClick = {
@@ -176,9 +217,16 @@ fun HomeScreen(innerPadding: PaddingValues) {
             },
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color.LightGray)
+
         ) {
-            Text("GUESS THE COUNTRY")
+            Text(
+                text="GUESS THE COUNTRY",
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+
+            )
 
         }
 
@@ -190,12 +238,15 @@ fun HomeScreen(innerPadding: PaddingValues) {
             },
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth() ,
+            colors = ButtonDefaults.buttonColors(Color.LightGray)
         ) {
-            Text("GUESS HINTS")
+            Text(
+                text="GUESS HINTS",
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+            )
         }
-
-
 
         Button(
             onClick = {
@@ -206,9 +257,15 @@ fun HomeScreen(innerPadding: PaddingValues) {
 
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color.LightGray)
         ) {
-            Text("GUESS THE FLAG")
+            Text(
+                text="GUESS THE FLAG",
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+
+            )
         }
 
         Button(
@@ -219,10 +276,23 @@ fun HomeScreen(innerPadding: PaddingValues) {
             },
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Color.LightGray)
         ) {
-            Text("ADVANCED LEVEL")
+            Text(
+                text="ADVANCED LEVEL",
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+            )
         }
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Text(
+            text="©Developed by Dumindu Gamage.",
+            fontWeight = FontWeight.Bold
+
+        )
     }
 }
 
@@ -232,12 +302,17 @@ fun HomeScreen(innerPadding: PaddingValues) {
 fun SwitchMinimalExample() {
     var checked by remember { mutableStateOf(true) }
 
-    Switch(
-        checked = checked,
-        onCheckedChange = {
-            checked = it
-        }
-    )
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopEnd
+    ) {
+        Switch(
+            checked = checked,
+            onCheckedChange = {
+                checked = it
+            }
+        )
+    }
 }
 
 // @Preview(showBackground = true)
@@ -245,4 +320,5 @@ fun SwitchMinimalExample() {
 // fun DefaultPreview() {
 // CountryFlagsApp()
 // }
+
 

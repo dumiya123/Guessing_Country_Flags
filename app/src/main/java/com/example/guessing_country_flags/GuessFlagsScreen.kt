@@ -82,7 +82,7 @@ class MainActivity4 : ComponentActivity() {
     }
 }
 
-//lets create the function for creating GuessFlagScreen Screen.
+// create the function for creating GuessFlagScreen Screen.
 @Composable
 fun GuessFlagsScreen(innerPadding: PaddingValues) 
 {
@@ -114,9 +114,11 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
     }
 
     // below code will  generate 3 unique random flag images and their corresponding countries
+
     fun generatecountry_flags_pairs(): List<Pair<String, String>>
     {
         val codes_of_countries = countries_json.keys().asSequence().toList()
+
         return codes_of_countries.shuffled().distinct().take(3).map { countryCode ->
             val name_of_the_country = countries_json.optString(countryCode)
             countryCode to name_of_the_country
@@ -168,8 +170,8 @@ fun GuessFlagsScreen(innerPadding: PaddingValues)
                 painter = painterResource(id = resourceId),
                 contentDescription = "Country Flag",
                 modifier = Modifier
-                    .size(180.dp) // Adjust the size of flag images
-                    .padding(2.dp) // Add some padding around each flag
+                    .size(180.dp) // Adjust the size of flag images .
+                    .padding(2.dp) // Add some padding around each flag.
                     .background(Color.LightGray)
                     .clickable { onFlagClick(countries_json.optString(countryCode)) }
             )

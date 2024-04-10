@@ -232,7 +232,7 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
                     },
                     enabled = !user_submitted_guess && user_incorrect_attempts < 3,
                     textStyle = TextStyle(
-                        color = if (user_submitted_guess && Indices_of_correct_country.contains(index)) Color.Blue else Color.Red
+                        color = if (user_submitted_guess && Indices_of_correct_country.contains(index)) Color.Green else Color.Red
                     ),
                     modifier = Modifier
                         .width(300.dp)
@@ -266,7 +266,9 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
         // Display correctness message if user_submitted_guess
         if (user_submitted_guess)
         {
+            //Display the message based on the number of correct answers.
             val message = if (correct_answers_of_user == 3) "CORRECT!" else "WRONG!"
+            //Identify the color based on correctness.
             val color = if (correct_answers_of_user == 3) Color.Green else Color.Red
             Text(
                 text = message,
@@ -274,7 +276,10 @@ fun AdvancedFlagsScreen(innerPadding: PaddingValues) {
                 color = color
             )
 
+            // Display the names of correct countries if show_country_names is true
+
             if (show_country_names) {
+                // Join the names of correct countries into a single string
                 val correctname_of_the_Countrys = country_flag_Pairs
                     .joinToString(", ") { it.second }
                 Text(
